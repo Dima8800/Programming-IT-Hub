@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-5">Image Converter</h1>
+    <form id="uploadForm" class="mt-4" enctype="multipart/form-data">
+        <div class="input-group mb-3">
+            <input type="file" id="fileInput" name="file" class="form-control">
+            <input type="number" id="numberInput" name="number" class="form-control" placeholder="Enter a number">
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </div>
+    </form>
+    <div class="row mt-5">
+        <div class="col">
+            <h2>Original Image</h2>
+            <div id="originalImage" class="placeholder">Here will be the uploaded photo</div>
+        </div>
+        <div class="col">
+            <h2>Converted Image</h2>
+            <div id="convertedImage" class="placeholder">Here will be the converted photo</div>
+            <!-- Кнопка для загрузки конвертированного изображения -->
+            <a id="downloadButton" class="btn btn-primary mt-3" style="display: none;">Download Converted Image</a>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.getElementById('uploadForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData();
+        const fileInput = document.getElementById('fileInput');
+        const numberInput = document.getElementById('numberInput');
+        formData.append('file', fileInput.files[0]);
+        formData.append('number', numberInput.value);
+        fetch('/img/convert', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.blob())
+            .then(blob => {
+                const originalImage = document.getElementById('originalImage');
+                originalImage.innerHTML = ''; // Clear previous content
+                const reader = new FileReader();
+                reader.onload = function() {
+                    const img = document.createElement('img');
+                    img.src = reader.result;
+                    originalImage.appendChild(img);
+                }
+                reader.readAsDataURL(fileInput.files[0]);
+
+                const convertedImage = document.getElementById('convertedImage');
+                convertedImage.innerHTML = ''; // Clear previous content
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(blob);
+                convertedImage.appendChild(img);
+
+                // Показываем кнопку для загрузки конвертированного изображения
+                const downloadButton = document.getElementById('downloadButton');
+                downloadButton.style.display = 'block';
+                // Устанавливаем атрибут href и download для ссылки на изображение
+                const filename = 'converted_image.png'; // Здесь можно указать имя файла
+                downloadButton.setAttribute('href', URL.createObjectURL(blob));
+                downloadButton.setAttribute('download', filename);
+            })
+            .catch(error => console.error('Error:', error));
+    });
+</script>
+</body>
+</html>
