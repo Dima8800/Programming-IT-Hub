@@ -1,21 +1,18 @@
 package ithub.task.graph.routes.graph;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 //*
 // A B C D E
 // | A B 10
 // | B C 20
-// | C D -10
-// | D E
-// | B A
+// | C D 10
+// | D E 5
+// | B A 2
 // */
 
 @RestController
-@RequestMapping("/vector")
+@RequestMapping("/graph")
 public class GraphController {
     private final GraphService graphService;
 
@@ -26,5 +23,10 @@ public class GraphController {
     @PostMapping("/GenerateSvgByVertex")
     public String GenerateSvgByVertex(@RequestBody String request){
         return graphService.GenerateSVGByStringForGraph(request);
+    }
+
+    @GetMapping("/NextStep/{step}")
+    public String NextStep(@PathVariable Integer step){
+        return graphService.NextStep(step);
     }
 }

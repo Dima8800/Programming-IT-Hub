@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отправка POST запроса и отображение SVG</title>
+</head>
+<body>
+<form id="svgForm">
+    <textarea type="text" id="inputData" placeholder="Введите данные"></textarea>
+    <button type="submit">Отправить</button>
+</form>
+<div id="svgContainer" style="align-items: center; background: aqua" ></div>
+
+<script>
+    document.getElementById('svgForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const inputData = document.getElementById('inputData').value;
+
+        // Удаляем символы новой строки '\n' из введенных данных
+        const cleanedInputData = inputData.replace(/\n/g, '');
+
+        fetch('http://localhost:8080/graph/GenerateSvgByVertex', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ data: cleanedInputData }) // Отправляем очищенные данные
+        })
+            .then(response => response.text())
+            .then(svgString => {
+                const svgContainer = document.getElementById('svgContainer');
+                svgContainer.innerHTML = svgString;
+            })
+            .catch(error => console.error('Ошибка:', error));
+    });
+</script>
+</body>
+</html>
