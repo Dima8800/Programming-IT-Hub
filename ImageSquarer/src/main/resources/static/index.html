@@ -12,6 +12,7 @@
     <form id="uploadForm" class="mt-4" enctype="multipart/form-data">
         <div class="input-group mb-3">
             <input type="file" id="fileInput" name="file" class="form-control">
+            <input type="checkbox" id="check">
             <input type="number" id="numberInput" name="number" class="form-control" placeholder="Enter a number">
             <button type="submit" class="btn btn-primary">Upload</button>
         </div>
@@ -33,14 +34,24 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    document.getElementById('uploadForm').addEventListener('submit', function(event) {
+    const checkbox = document.getElementById("check")
+    let status = false;
+    checkbox.onchange = (event) => {
+        status = event.target.value;
+
+    }
+    document.getElementById('uploadForm').addEventListener('submit', function (event) {
         event.preventDefault();
         const formData = new FormData();
         const fileInput = document.getElementById('fileInput');
+
         const numberInput = document.getElementById('numberInput');
+
         formData.append('file', fileInput.files[0]);
         formData.append('number', numberInput.value);
-        fetch('/img/convert', {
+
+        fetch(`${status ? "/img/convert" : ""}`, {
+
             method: 'POST',
             body: formData
         })
@@ -49,7 +60,7 @@
                 const originalImage = document.getElementById('originalImage');
                 originalImage.innerHTML = ''; // Clear previous content
                 const reader = new FileReader();
-                reader.onload = function() {
+                reader.onload = function () {
                     const img = document.createElement('img');
                     img.src = reader.result;
                     originalImage.appendChild(img);

@@ -18,8 +18,6 @@ public class convertService {
         int width = image.getWidth();
         int height = image.getHeight();
 
-        System.out.println(squareSize);
-
         int numSquaresX = width / squareSize;
         int numSquaresY = height / squareSize;
 
@@ -57,4 +55,5 @@ public class convertService {
 
         return outputStream.toByteArray();
     }
+
 }
