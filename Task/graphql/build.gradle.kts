@@ -19,7 +19,7 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-graphql")
-	
+
 	// ModelMapper
 	implementation("org.modelmapper:modelmapper:3.2.0")
 

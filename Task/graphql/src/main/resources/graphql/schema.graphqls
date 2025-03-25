@@ -1,0 +1,27 @@
+# Определение модели Car
+type Car {
+    brand: String!
+    model: String!
+    color: String!
+    engine: Float!
+}
+
+# Определение модели User
+type User {
+    id: ID!
+    name: String!
+    surname: String!
+    phone: String!
+    cars: [Car]
+}
+
+type Query {
+    user(id: ID!): User # Получить пользователя по ID
+    users: [User] # Получить список всех пользователей
+}
+
+# Определение корневого типа Mutation
+type Mutation {
+    addUser(name: String!, surname: String!, phone: String!): User # Добавить нового пользователя
+    addCar(userId: ID!, brand: String!, model: String!, color: String!, engine: Float!): Car # Добавить автомобиль пользователю
+}
